@@ -9,7 +9,7 @@ import myAboutImage from './assets/about copy.png'
 
 function App() {
 
-  const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-production-7962.up.railway.app//api";
+  const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-production-7962.up.railway.app/api";
 
   const [data, setData] = useState({
     name: "",
