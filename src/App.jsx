@@ -4,8 +4,8 @@ import './App.css'
 import Typed from 'typed.js'
 import Typing from "./Typing"
 
-import myHomeImage from './assets/home.png'
-import myAboutImage from './assets/about copy.png'
+import myHomeImage from './assets/image.png'
+import myAboutImage from './assets/mymy.jpg'
 
 function App() {
 
@@ -127,6 +127,17 @@ function App() {
 
   const currentYear = new Date().getFullYear()
 
+  const imageStyle = {
+    borderRadius: '50%',
+    width: 'clamp(250px, 30vw, 350px)',
+    aspectRatio: '1/1',
+    objectFit: 'cover',
+    border: '3px solid #0ef',
+    boxShadow: '0 0 1rem #0ef, 0 0 3rem #0ef',
+    backgroundColor: 'transparent',
+    marginLeft: '3rem',
+  };
+
   return (
     <>
       {/* HEADER */}
@@ -161,14 +172,14 @@ function App() {
         </div>
 
         <div className="home-image">
-          <img src={myHomeImage} alt="Home" />
+          <img src={myHomeImage} alt="Home" style={imageStyle} />
         </div>
       </section>
 
       {/* ABOUT */}
       <section className="about" id="about">
         <div className="about-image">
-          <img src={myAboutImage} alt="About" />
+          <img src={myAboutImage} alt="About" style={imageStyle} />
         </div>
 
         <div className="about-content">
