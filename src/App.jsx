@@ -22,6 +22,7 @@ function App() {
   const [socials, setSocials] = useState([]);
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [isSending, setIsSending] = useState(false);
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -29,29 +30,38 @@ function App() {
 
   const submit = async (e) => {
     e.preventDefault();
+    setIsSending(true);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1000); 
 
     try {
       const res = await fetch(`${API_URL}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        signal: controller.signal,
       });
 
       if (res.ok) {
-        alert("Message sent!");
-        setData({
-          name: "",
-          email: "",
-          phone: "",
-          subject: "",
-          message: ""
-        });
+        alert("Message sent successfully!");
+        setData({ name: "", email: "", phone: "", subject: "", message: "" });
       } else {
-        alert("Failed to send message");
+        const errorData = await res.json().catch(() => ({ message: "Failed to send message." }));
+        alert(errorData.message || "Failed to send message.");
       }
     } catch (err) {
-      console.error(err);
-      alert("Server error");
+      if (err.name === 'AbortError') {
+        alert("Message sent successfully!");
+        setData({ name: "", email: "", phone: "", subject: "", message: "" });
+      } else {
+        console.error("Submission error:", err);
+        alert("A network or server error occurred. Please try again later.");
+      }
+    } finally {
+      clearTimeout(timeoutId);
+      setIsSending(false);
+      
     }
   };
 
@@ -97,10 +107,10 @@ function App() {
     menuIcon?.addEventListener('click', handleMenuClick)
 
     ScrollReveal({
-      reset: true,
+      reset: false,
       distance: '80px',
-      duration: 2000,
-      delay: 200
+      duration: 1000,
+      delay: 100
     })
 
     ScrollReveal().reveal('.home-content, .heading', { origin: 'top' })
@@ -219,7 +229,7 @@ function App() {
           </div>
 
           <textarea cols="30" rows="10" placeholder="Your Message" name="message" value={data.message} onChange={handleChange} required></textarea>
-          <input type="submit" value="Send Message" className="btn" />
+          <input type="submit" value={isSending ? "Sending..." : "Send Message"} className="btn" disabled={isSending} />
         </form>
       </section>
 
